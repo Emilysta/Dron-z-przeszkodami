@@ -34,11 +34,40 @@ class Drone : public SceneObject {
    * Pole przechowuje kat obrotu wzgledem poczatkowego polozenia
    */
   double Angle = 0;
+  /*!
+   * \brief Pole przechowuje obiekt Cuboid bedacy kamerą drona
+   *
+   * Pole przechowuje obiekt Cuboid bedacy kamerą drona
+   */
   Cuboid Korpus2;
+  /*!
+   * \brief Pole przechowuje ilość istniejących obiektów Drone
+   *
+   * Pole przechowuje ilość istniejących obiektów Drone
+   */
+  static int ExistingNumberDr;
+  /*!
+   * \brief Pole przechowuje ilość stworzonych obiektów Drone
+   *
+   * Pole przechowuje ilość stworzonych obiektów Drone
+   */
+  static int CreatedNumberDr;
+  Drone()
+  {
+    ++ExistingNumberDr;
+    ++CreatedNumberDr;
+  }
 
 
  public:
- Drone(){TypeOfID=1;}
+  ~Drone() 
+  { 
+    --ExistingNumberDr; 
+  }
+  Drone(Drone const &obj)
+  {
+    ++ExistingNumberDr;
+  }
   /*!
    * \brief Metoda pozwala na animacje ruchu drona na wprost
    *
@@ -135,7 +164,7 @@ class Drone : public SceneObject {
 
   void SaveCenter(std::ostream &Strm);
 
-    /*!
+  /*!
    * \brief Metoda sprawdzająca, czy wystepuje zderzenie z innym obiektem sceny.
    * Metoda pozwala na sprawdzenie, czy wystepuje kolizja poruszającego się 
    * drona z innym obiektem sceny.
@@ -144,4 +173,11 @@ class Drone : public SceneObject {
    * \retval false - metoda zwraca false, gdy zderzenie nie występuje
    */
   bool IsCollision(std::list<std::shared_ptr<SceneObject>> SceneObjects);
+
+  static std::shared_ptr<Drone> CreateDrone();
+
+  void Set(PzG::LaczeDoGNUPlota &Link);
+
+  static int RetExistingNumberDr() { return ExistingNumberDr; }
+  static int RetCreatedNumberDr() { return CreatedNumberDr; }
 };

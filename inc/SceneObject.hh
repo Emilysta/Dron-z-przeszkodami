@@ -17,14 +17,6 @@ class SceneObject
 
  protected:
   /*!
-   * \brief Pole sluzy do identyfikacji klasy pochodnej
-   *
-   * Pole sluzy do identyfikacji klasy pochodnej\n
-   * 0-przeszkoda\n
-   * 1-dron\n
-   */
-  int TypeOfID;
-  /*!
    * \brief Pole przechowuje wspolrzedne srodka obiektu
    *
    * Pole przechowuje wspolrzedne srodka obiektu w globalnym ukladzie
@@ -39,6 +31,7 @@ class SceneObject
    *\brief Pole przechowuje wysokość obiektu
    */
   double Height;
+
  public:
   SceneObject() 
   {
@@ -55,13 +48,6 @@ class SceneObject
   }
   static int RetExistingNumber() { return ExistingNumber; }
   static int RetCreatedNumber() { return CreatedNumber; }
-  /*!
-   * \brief Metoda pozwala na zwrocenie pola TypeOfID
-   *
-   * Metoda pozwala na zwrocenie pola TypeOfID
-   * \return wartosc TypeOfID
-   */
-  virtual int ID() const { return TypeOfID; }
   /*!
    * \brief Metoda pozwala na wybor odpowiedniej metody zapisu w klasach
    * pochodnych
@@ -124,8 +110,15 @@ class SceneObject
      * \return Zwraca wysokość bryły
      */
   virtual double GetHeight() {return Height;}
-
-  virtual void SaveCenter(std::ostream &Strm) {}
+    /*!
+     * \brief Metoda pozwala na zapis środka obiektu do pliku. 
+     */
+  virtual void SaveCenter(std::ostream &Strm){}
+    /*!
+     * \brief Metoda pozwala na ustawienie 
+     * wymiarów/przesuniecia produkowanego obiektu. 
+     */
+  virtual void Set(){}
 
 };
 

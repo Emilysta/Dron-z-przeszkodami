@@ -1,6 +1,7 @@
 #include "stage_service.hh"
 #include "Point3D.hh"
 #include "SceneObject.hh"
+#include "Scene.hh"
 
 void DisplayMenu() 
 {
@@ -12,7 +13,9 @@ void DisplayMenu()
   std::cout << "\ts - straight flight" << std::endl;
   std::cout << "\td - display menu" << std::endl;
   std::cout << "\tc - change drone" << std::endl;
-  std::cout << "\te - enlargement/reduction" << std::endl << std::endl;
+  std::cout << "\te - enlargement/reduction" << std::endl;
+  std::cout << "\ta - add object"<< std::endl;
+  std::cout << "\tr - delete drone"<< std::endl <<std::endl;
   std::cout << "\tq - end of the program" << std::endl;
 }
 void DisplayNumbers()

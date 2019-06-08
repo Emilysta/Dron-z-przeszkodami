@@ -1,6 +1,6 @@
 #pragma once
+#include "Factory.hh"
 #include "Drone.hh"
-#include "SceneObject.hh"
 #include "Obstacle.hh"
 #include <memory>
 #define NUMBER_OF_DRONES 2
@@ -119,5 +119,17 @@ class Scene {
    * którym obecnie operujemy
    */
   void ChooseDrone();
+  /*!
+   * \brief Metoda pozwala dodawać obiekt do sceny
+   */
+  void AddObject();
+  /*!
+   * \brief Metoda pozwala usuwać obiekt ze sceny
+   */
+  void RemoveDrone();
+  /*!
+   * \brief Metoda pozwala zmienić pliki dodane do łącza GNUPlot
+   */
+  void EditFiles();
 };
 

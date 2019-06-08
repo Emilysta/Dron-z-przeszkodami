@@ -1,5 +1,8 @@
 #include "Drone.hh"
 
+int Drone::ExistingNumberDr = 0;
+int Drone::CreatedNumberDr = 0;
+
 void Drone::Save(int i)
 {
   std::fstream PlikWy;
@@ -7,13 +10,13 @@ void Drone::Save(int i)
   NameOfFile = "Korpus";
   NameOfFile.append(std::to_string(i));
   NameOfFile.append(".dat");
-  PlikWy.open(NameOfFile, std::fstream::out);
+  PlikWy.open(NameOfFile, std::fstream::out | std::fstream::trunc);
   Korpus.SaveC(PlikWy);
   PlikWy.close();
   NameOfFile = "Camera";
   NameOfFile.append(std::to_string(i));
   NameOfFile.append(".dat");
-  PlikWy.open(NameOfFile, std::fstream::out);
+  PlikWy.open(NameOfFile, std::fstream::out | std::fstream::trunc);
   Korpus2.SaveC(PlikWy);
   PlikWy.close();
   NameOfFile = "Line";
@@ -29,7 +32,7 @@ void Drone::Save(int i)
     NameOfFile.append("_");
     NameOfFile.append(std::to_string(j));
     NameOfFile.append(".dat");
-    PlikWy.open(NameOfFile, std::fstream::out);
+    PlikWy.open(NameOfFile, std::fstream::out| std::fstream::trunc);
     Rotor[j].SaveP(PlikWy);
     PlikWy.close();
   }
@@ -84,8 +87,8 @@ int Drone::Move(PzG::LaczeDoGNUPlota Link,int i,std::list<std::shared_ptr<SceneO
     {
       Rotor[i].MoveByVector(ruch_kon / ilosc_klatek);
     }
-    this->Animation(Link,i);
-    this->Save(i);
+    Animation(Link,i);
+    Save(i);
     Link.Rysuj();
     usleep(2000);
   }
@@ -120,8 +123,8 @@ void Drone::Rotation(PzG::LaczeDoGNUPlota Link,int i)
     {
       Rotor[i].Rotation(1);
     }
-    this->Animation(Link,i);
-    this->Save(i);
+    Animation(Link,i);
+    Save(i);
     Link.Rysuj();
     usleep(20000);
   }
@@ -135,7 +138,7 @@ void Drone::Animation(PzG::LaczeDoGNUPlota Link,int i )
   Rotor[2].RotationOfRotor(-10);
   Rotor[3].RotationOfRotor(10);
 
-  this->Save(i);
+  Save(i);
   Link.Rysuj();
   usleep(1000);
 }
@@ -160,7 +163,7 @@ void Drone::Enlarge(double en,PzG::LaczeDoGNUPlota Link,int i)
   SetRadius(r);
   r=Height*en;
   SetHeight(r);
-  this->Save(i);
+  Save(i);
   Link.Rysuj();
   usleep(1000);
 }
@@ -191,9 +194,9 @@ bool Drone::IsCollision(std::list<std::shared_ptr<SceneObject>> SceneObjects)
     {
       continue;
     }
-    if(this->GetRadius()+object->GetRadius() > this->GetCenter().Length2D(object->GetCenter()))
+    if(GetRadius()+object->GetRadius() > GetCenter().Length2D(object->GetCenter()))
     {
-      if(abs(this->GetCenter()(2)-object->GetCenter()(2)<this->GetHeight()))
+      if(abs(GetCenter()(2)-object->GetCenter()(2)<GetHeight()))
       { 
         std::cout<< "Collision follows!!!\n ";
         return true; 
@@ -201,4 +204,42 @@ bool Drone::IsCollision(std::list<std::shared_ptr<SceneObject>> SceneObjects)
     }
   }
   return false;
+}
+std::shared_ptr<Drone> Drone::CreateDrone()
+{
+  shared_ptr<Drone> new_drone(new Drone());
+  return new_drone;
+}
+
+void Drone::Set(PzG::LaczeDoGNUPlota &Link)
+{
+  Vector3D position;
+  std::cout <<"enter the position of drone"<<std::endl;
+  std::cin>>position;
+  Init();
+  MoveByVector(position);
+  int i = RetExistingNumberDr();
+  Save(i);
+  string NameOfFile;
+  NameOfFile = "Korpus";
+  NameOfFile.append(std::to_string(i));
+  NameOfFile.append(".dat");
+  Link.DodajNazwePliku(NameOfFile.c_str());
+  NameOfFile = "Camera";
+  NameOfFile.append(std::to_string(i));
+  NameOfFile.append(".dat");
+  Link.DodajNazwePliku(NameOfFile.c_str());
+  NameOfFile = "Line";
+  NameOfFile.append(std::to_string(i));
+  NameOfFile.append(".dat");
+  Link.DodajNazwePliku(NameOfFile.c_str());
+  for (int k = 0; k < NUMBER_OF_ROTORS; ++k) 
+  {
+    NameOfFile = "Rotor";
+    NameOfFile.append(std::to_string(i));
+    NameOfFile.append("_");
+    NameOfFile.append(std::to_string(k));
+    NameOfFile.append(".dat");
+    Link.DodajNazwePliku(NameOfFile.c_str());
+  }
 }

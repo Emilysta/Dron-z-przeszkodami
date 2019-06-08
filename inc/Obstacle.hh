@@ -1,7 +1,9 @@
 #pragma once
 #include "Cuboid.hh"
+#include "lacze_do_gnuplota.hh"
 #include "SceneObject.hh"
 #include <iomanip>
+#include <memory>
 
 
 /*****************************************************************/
@@ -15,6 +17,18 @@
  */
 class Obstacle: public SceneObject
 { 
+  /*!
+   * \brief Pole przechowuje ilość istniejących obiektów Obstacle
+   *
+   * Pole przechowuje ilość istniejących obiektów Obstacle
+   */
+  static int ExistingNumberOb;
+  /*!
+   * \brief Pole przechowuje ilość stworzonych obiektów Obstacle
+   *
+   * Pole przechowuje ilość stworzonych obiektów Obstacle
+   */
+  static int CreatedNumberOb;
   /*!
   *\brief Pole przechowuje oryginalne punkty poszczegolnych wierzcholkow
   *
@@ -35,8 +49,7 @@ class Obstacle: public SceneObject
   * 
   * Pole przechowuje Point o jaki sa przesuniete wierzcholki w 
   * stosunku do lokalnego ukladu odniesienia.
-  */
-  
+  */ 
   Vector3D Vec_Trans=Vector3D();
   /*!
   *\brief Pole przechowuje kat o jaki figura jest obrocona
@@ -44,15 +57,35 @@ class Obstacle: public SceneObject
   * Pole przechowuje kat o jaki figura jest obrocona.
   */
   double Angle=0;
-
- public:
   /*!
    *\brief Konstruktor domyślny.
    *
    * Konstruktor ten ustawia pole TypeOfID na 
    * wartość 0 oznaczającą że obiekt jest przeszkodą.
    */
-  Obstacle() { TypeOfID = 0; }
+  Obstacle()
+  {    
+    ++ExistingNumberOb;
+    ++CreatedNumberOb;
+  }
+
+
+
+ public:
+   /*!
+   *\brief Destruktor.
+   */
+  ~Obstacle() 
+  { 
+    --ExistingNumberOb; 
+  }
+  /*!
+   *\brief Konstruktor kopiujący.
+   */
+  Obstacle(Obstacle const &obj)
+  {
+    ++ExistingNumberOb;
+  }
   /*!
    *\brief Metoda zwraca środek przeszkody.
    *
@@ -83,9 +116,18 @@ class Obstacle: public SceneObject
    * wartosci
    */
   void Init();
-
+  /*!
+   *\brief Metoda inicjaliuzuje wierzcholki prostopadloscianu
+   * korzystając z podanych przez uzytkownika wartosci
+   */
+  void Init(double d, double s,double h);
+  /*!
+  *\brief Metoda zapisuje obiekt do streamu
+  */
   void SaveX(std::ostream &Strm);
- 
+   /*!
+  *\brief Metoda zapisuje obiekt 
+  */
   void Save(int i);
   /*!
    *\brief Przeciazenie operatora dodawania dla klasy przeszkoda i
@@ -141,9 +183,27 @@ class Obstacle: public SceneObject
   double GetRadius() { return Radius;}
   /*!
    * \brief Metoda pozwala na zwrócenie wysokości obiektu.
-   * \return Zwraca wysokość bryły
+   * \return Zwraca wysokość bryły.
    */
   double GetHeight() { return Height;}
-
+  /*!
+  *\brief Metoda zapisuje środek obiektu do streamu.
+  */
   void SaveCenter(std::ostream &Strm);
+  /*!
+  *\brief Metoda tworząca obiekt.
+  */
+  static std::shared_ptr<Obstacle> CreateObstacle();
+  /*!
+  *\brief Metoda pozwalająca ustawić wymiary/przesuniecie obiektu.
+  */
+  void Set(PzG::LaczeDoGNUPlota &Link);
+  /*!
+  *\brief Metoda zwracająca ilość istniejących przeszkod.
+  */
+  static int RetExistingNumberOb() { return ExistingNumberOb; }
+  /*!
+  *\brief Metoda zwracająca ilość stworzonych przeszkod.
+  */
+  static int RetCreatedNumberOb() { return CreatedNumberOb; }
 };

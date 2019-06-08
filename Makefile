@@ -9,12 +9,13 @@ __start__: drone
 drone: obj obj/main.o obj/Cuboid.o obj/lacze_do_gnuplota.o\
 		   obj/GeometricFigure.o obj/Prism.o obj/SceneObject.o\
 		   obj/Drone.o obj/stage_service.o obj/Scene.o\
-		   obj/Obstacle.o
+		   obj/Obstacle.o obj/Factory.o
 
 	g++ -Wall -pedantic -std=c++0x -o drone obj/main.o\
                         obj/Cuboid.o obj/lacze_do_gnuplota.o obj/Scene.o\
 						obj/GeometricFigure.o obj/Prism.o obj/Drone.o\
-						obj/stage_service.o obj/Obstacle.o obj/SceneObject.o
+						obj/stage_service.o obj/Obstacle.o obj/SceneObject.o\
+						obj/Factory.o
 
 obj:
 	mkdir obj
@@ -52,6 +53,9 @@ obj/Scene.o: src/Scene.cpp inc/Scene.hh inc/Drone.hh inc/Obstacle.hh
 
 obj/stage_service.o: src/stage_service.cpp inc/stage_service.hh inc/Vector3D.hh inc/lacze_do_gnuplota.hh
 	g++ -c ${CXXFLAGS} -o obj/stage_service.o src/stage_service.cpp
+
+obj/Factory.o: src/Factory.cpp inc/Factory.hh inc/SceneObject.hh 
+	g++ -c ${CXXFLAGS} -o obj/Factory.o src/Factory.cpp
 
 clean:
 	rm -f obj/*.o Drone

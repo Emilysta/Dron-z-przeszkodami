@@ -1,4 +1,8 @@
 #include "Obstacle.hh"
+#include <memory>
+
+int Obstacle::CreatedNumberOb = 0 ;
+int Obstacle::ExistingNumberOb = 0;
 
 void Obstacle::MoveByVector(const Vector3D &vec)
 {
@@ -24,6 +28,25 @@ void Obstacle::Rotation(double Angle1)
     P_glob[i] = P[i] + Vec_Trans;
   }
 }
+void Obstacle::Init(double d, double s,double h)
+{
+  P.push_back(Point3D(d/2, s/2, h/2));
+  P.push_back(Point3D(d/2, -s/2, h/2));
+  P.push_back(Point3D(-d/2, s/2, h/2));
+  P.push_back(Point3D(-d/2, -s/2, h/2));
+
+  P.push_back(Point3D(-d/2, s/2, -h/2));
+  P.push_back(Point3D(-d/2, -s/2, -h/2));
+  P.push_back(Point3D(d/2, s/2, -h/2));
+  P.push_back(Point3D(d/2, -s/2, -h/2));
+
+  SetCenter(Point3D(0,0,0));
+  SetHeight(P[3](2)-P[4](2));
+  SetRadius(P[0].Length2D(P[2])/2); // Punkt - Punkt przez dwa
+
+  P_glob = P;
+}
+
 void Obstacle::Init()
 {
   P.push_back(Point3D(5, 5, 0));
@@ -35,12 +58,11 @@ void Obstacle::Init()
   P.push_back(Point3D(-5, -5, -5));
   P.push_back(Point3D(5, 5, -5));
   P.push_back(Point3D(5, -5, -5));
-
-  P_glob = P;
-
-  SetCenter(Point3D(0,0,-2.5));
-  SetRadius(7.5);
+  
+  SetCenter(Point3D(0,0,0));
+  SetRadius(7.4);
   SetHeight(P[0](2)-P[4](2));
+  P_glob=P;
 }
 void Obstacle::SaveX(std::ostream &Strm)
 {
@@ -110,4 +132,28 @@ void Obstacle::SaveCenter(std::ostream &Strm)
   for(int k=0;k<3;++k)
     {Strm << std::setw(16) << std::fixed << std::setprecision(10)<< Center(k);}
     Strm << std::endl;
+}
+std::shared_ptr<Obstacle> Obstacle::CreateObstacle()
+{
+  shared_ptr<Obstacle> new_obstacle(new Obstacle());
+  return new_obstacle;
+}
+
+void Obstacle::Set(PzG::LaczeDoGNUPlota &Link)
+{
+  Vector3D position,size;
+  std::cout <<"Enter the position of Obstacle:"<<std::endl;
+  std::cin>>position;
+  std::cout << "Enter sizes of Obstacle l,w,h:" <<std::endl;
+  std::cin>>size;
+  this->Init(size[0],size[1],size[2]);
+  this->MoveByVector(position);
+
+  int i = RetExistingNumberOb();
+  Save(i);
+  string NameOfFile;
+  NameOfFile = "Obstacle";
+  NameOfFile.append(std::to_string(i));
+  NameOfFile.append(".dat");
+  Link.DodajNazwePliku(NameOfFile.c_str());
 }

@@ -27,10 +27,22 @@ int main()
         sc->GetLink().Rysuj();
         break;
       }
+      case 'a': 
+      {
+        sc->AddObject();
+        sc->GetLink().Rysuj();
+        break;
+      }
       case 'd': 
       {
         DisplayMenu();
         Current(sc);
+        break;
+      }
+      case 'r': 
+      {
+        sc->RemoveDrone();
+        sc->GetLink().Rysuj();
         break;
       }
       case 'e': 
